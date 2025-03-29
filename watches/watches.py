@@ -52,21 +52,21 @@ class AnalogDial:
 
 
 class Hand:
-    def __init__(self, parent_watch, t, lengh=100, thight=10):  # Створюємо стрілки. Параметр t позначає
+    def __init__(self, parent_watch, t, lengh=100, thight=10):  # Створюємо стрілку. Параметр t позначає
         self.x_center = parent_watch.x  # ключ часу наприклад 'sec'
         self.y_center = parent_watch.y
         self.t = t
         self.lengh = lengh
         self.thight = thight
 
-    def hand_draw(self):
+    def hand_draw(self): #Малюємо стрілку
         up()
         goto(self.x_center, self.y_center + 100)
 
         left(90)
-        right(Watch.time_dict[self.t] * 6)
+        right(Watch.time_dict[self.t] * 6) # Повертаємо стрілку відповідно до часу
 
-        forward(int(self.lengh * 0.8))
+        forward(int(self.lengh * 0.8)) #Далі малюється сама стрілка
         left(90)
         fillcolor("black")
         begin_fill()
@@ -83,7 +83,7 @@ class Hand:
         end_fill()
         up()
         goto(self.x_center, self.y_center)
-        right(heading())
+        right(heading()) #Пипець ВАЖЛИВО!!! В будь якій незрозумілій ситуації вертає напрямок черепахи по дефолту, юзайте
 
 
 class AnalogWatch(Watch):
