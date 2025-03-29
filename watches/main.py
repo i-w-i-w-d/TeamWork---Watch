@@ -1,9 +1,8 @@
 from watches import *
 
 
-def updater():
+def updater(): #Оновлює всі годинники
     a1.update_all()
-
     ontimer(updater, 1000)
 
 
