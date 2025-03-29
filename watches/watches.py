@@ -1,16 +1,16 @@
-import time #
-from turtle import *
+import time  # Імпортуємо time для часу
+from turtle import *  # Дістаємо з туртли всі інструменти
 
 
 class Watch:
     time_dict = {}  # Спільний час для усіх годинників
     watches = []  # Список усіх синхронізованих годинників
 
-    def __init__(self, x=0, y=0):
+    def __init__(self, x=0, y=0):  # При створенні нового годинника запитуємо місце розміщення
         self.x = x
         self.y = y
         self.__class__.watches.append(self)  # Додаємо в перелік синхронізованих годинників
-        self.get_time()
+        self.get_time()  # Вперше отримуємо реальний час
 
     @staticmethod
     def get_time():  # Отримуємо реальний ас в вигляді словника
@@ -24,24 +24,26 @@ class Watch:
             "sec": local_time.tm_sec
         }
 
-    def update_all(self):
-        self.get_time()
-        clear()
+    def update_all(self):  # Якщо так викликати оновлення одного годинника, воно оновить усіх годинники одночасно
+        self.get_time()  # Оновлюємо час
+        # Використовувати для оновлення всього екрану зразу
+        # clear()
 
-        for obj in self.watches:
+        for obj in self.watches:  # Запускає метод оновлення відповідно до типу годинника
             if isinstance(obj, AnalogWatch):
                 obj.an_update()
 
 
 class AnalogDial:
-    def __init__(self, parent_watch):
+    def __init__(self, parent_watch):  # Беремо координати годинника
         self.x = parent_watch.x
         self.y = parent_watch.y
 
-    def draw_dial(self):
+    def draw_dial(self):  # Малюємо циферблат разом з цифрами. Клас цифри для аналогового годинника я вважаю зайвим
+        circle(100)
         up()
         left(90)
-        for n in range(12, 0, -1):
+        for n in range(12, 0, -1):  # Пишемо цифри
             goto(self.x - 6, self.y + 90)
             forward(84)
             write(str(n), font=('Arial', 16, 'normal'))
@@ -50,16 +52,14 @@ class AnalogDial:
 
 
 class Hand:
-    def __init__(self, parent_watch, t, lengh=100, thight=10):
-        self.x_center = parent_watch.x
+    def __init__(self, parent_watch, t, lengh=100, thight=10):  # Створюємо стрілки. Параметр t позначає
+        self.x_center = parent_watch.x  # ключ часу наприклад 'sec'
         self.y_center = parent_watch.y
         self.t = t
         self.lengh = lengh
         self.thight = thight
 
     def hand_draw(self):
-
-
         up()
         goto(self.x_center, self.y_center + 100)
 
@@ -87,24 +87,33 @@ class Hand:
 
 
 class AnalogWatch(Watch):
-    def __init__(self, x=0, y=0):
+    def __init__(self, x=0, y=0):  # Ініціюємо аналоговий годинник
         super().__init__(x, y)
-        self.dial = AnalogDial(self)
-        self.sec_hand = Hand(self, 'sec', lengh=110, thight=2)
-        self.min_hand = Hand(self, 'min', lengh=90, thight=4)
-        self.hour_hand = Hand(self, 'hour', lengh=70, thight=6)
-        self.an_update()
+        self.dial = AnalogDial(self)  # Створюємо для годинника обєкти циферблат та стрілки
+        self.sec_hand = Hand(self, 'sec', lengh=110, thight=2)  # Секундна
+        self.min_hand = Hand(self, 'min', lengh=90, thight=4)  # Хвилинна
+        self.hour_hand = Hand(self, 'hour', lengh=70, thight=6)  # Годинна
+        self.an_update()  # Запускаємо перше оновлення
 
-    def an_update(self):
+    def an_update(self):  # Оновлює виключно конкретний об'єкт годинник
         up()
-        goto(self.x, self.y)
+        goto(self.x, self.y)  # Йдемо на задані координати
         down()
-        tracer(0)
-        circle(100)
-        self.dial.draw_dial()
-        self.sec_hand.hand_draw()
+        tracer(0)  # Припиняємо анімацію
+        self.analog_clear()  # Стираємо наш обєкт з неактуальним часом
+        self.dial.draw_dial()  # Малюємо циферблат
+        self.sec_hand.hand_draw()  # Перемальовуємо стрілки з актуальним часом
         self.min_hand.hand_draw()
         self.hour_hand.hand_draw()
-        update()
+        update()  # Оновлюємо екран
         # real_time = [i for i in Watch.time_dict.values()]
         # write(real_time[-3:])
+
+    @staticmethod
+    def analog_clear():  # Метод оновлення аналогового годинника
+        pencolor('white')
+        fillcolor('white')
+        begin_fill()
+        circle(100)
+        end_fill()
+        pencolor('black')
