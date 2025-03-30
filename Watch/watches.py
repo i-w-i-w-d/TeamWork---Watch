@@ -6,10 +6,10 @@ class Watch:
     time_dict = {}
     watches = []
 
-    def __init__(self, x=0, y=0):  # Виправлено init на __init__
+    def __init__(self, x=0, y=0):
         self.x = x
         self.y = y
-        self.__class__.watches.append(self)  # Виправлено class на __class__
+        self.__class__.watches.append(self)
         self.get_time()
 
     @staticmethod
@@ -30,7 +30,7 @@ class Watch:
                 obj.d_update()
 
 class AnalogDial:
-    def __init__(self, parent_watch):  # Виправлено init на __init__
+    def __init__(self, parent_watch):
         self.turtle = Turtle()
         self.turtle.hideturtle()
         self.turtle.speed(0)
@@ -64,7 +64,7 @@ class AnalogDial:
             self.turtle.write(str(number_mapping[number]), align="center", font=('Arial', 14, 'normal'))
 
 class Hand:
-    def __init__(self, parent_watch, t, length=100, width=10):  # Виправлено init на __init__
+    def __init__(self, parent_watch, t, length=100, width=10):
         self.turtle = Turtle()
         self.turtle.hideturtle()
         self.turtle.speed(0)
@@ -93,7 +93,7 @@ class Hand:
         self.turtle.up()
 
 class AnalogWatch(Watch):
-    def __init__(self, x=0, y=0):  # Виправлено init на __init__
+    def __init__(self, x=0, y=0):
         super().__init__(x, y)
         self.dial = AnalogDial(self)
         self.sec_hand = Hand(self, 'sec', length=90, width=1)
@@ -110,7 +110,7 @@ class AnalogWatch(Watch):
         self.sec_hand.hand_draw()
 
 class DigitalWatch(Watch):
-    def __init__(self, x=0, y=0, format_24=True):  # Виправлено init на __init__
+    def __init__(self, x=0, y=0, format_24=True):
         super().__init__(x, y)
         self.turtle = Turtle()
         self.turtle.hideturtle()
@@ -247,5 +247,5 @@ def main():
     finally:
         screen.bye()
 
-if __name__ == "__main__":  # Виправлено name на __name__ і додано підкреслення
+if __name__ == "__main__":
     main()
