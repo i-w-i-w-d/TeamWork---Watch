@@ -6,10 +6,10 @@ class Watch:
     time_dict = {}
     watches = []
 
-    def __init__(self, x=0, y=0):
+    def __init__(self, x=0, y=0):  # Виправлено init на __init__
         self.x = x
         self.y = y
-        self.__class__.watches.append(self)
+        self.__class__.watches.append(self)  # Виправлено class на __class__
         self.get_time()
 
     @staticmethod
@@ -30,7 +30,7 @@ class Watch:
                 obj.d_update()
 
 class AnalogDial:
-    def __init__(self, parent_watch):
+    def __init__(self, parent_watch):  # Виправлено init на __init__
         self.turtle = Turtle()
         self.turtle.hideturtle()
         self.turtle.speed(0)
@@ -43,7 +43,11 @@ class AnalogDial:
         self.turtle.up()
         self.turtle.goto(self.x, self.y - self.radius)
         self.turtle.down()
+        self.turtle.pencolor("blue")
+        self.turtle.fillcolor("blue")
+        self.turtle.begin_fill()
         self.turtle.circle(self.radius)
+        self.turtle.end_fill()
 
         self.turtle.up()
         number_mapping = {
@@ -55,11 +59,12 @@ class AnalogDial:
             rad = math.radians(angle)
             x = self.x + (self.radius - 30) * math.cos(rad)
             y = self.y + (self.radius - 30) * math.sin(rad)
-            self.turtle.goto(x, y)
+            self.turtle.goto(x, y-10)
+            self.turtle.pencolor("red")
             self.turtle.write(str(number_mapping[number]), align="center", font=('Arial', 14, 'normal'))
 
 class Hand:
-    def __init__(self, parent_watch, t, length=100, width=10):
+    def __init__(self, parent_watch, t, length=100, width=10):  # Виправлено init на __init__
         self.turtle = Turtle()
         self.turtle.hideturtle()
         self.turtle.speed(0)
@@ -83,11 +88,12 @@ class Hand:
         self.turtle.setheading(90 - angle)
         self.turtle.down()
         self.turtle.width(self.width)
+        self.turtle.pencolor("yellow")
         self.turtle.forward(self.length)
         self.turtle.up()
 
 class AnalogWatch(Watch):
-    def __init__(self, x=0, y=0):
+    def __init__(self, x=0, y=0):  # Виправлено init на __init__
         super().__init__(x, y)
         self.dial = AnalogDial(self)
         self.sec_hand = Hand(self, 'sec', length=90, width=1)
@@ -104,7 +110,7 @@ class AnalogWatch(Watch):
         self.sec_hand.hand_draw()
 
 class DigitalWatch(Watch):
-    def __init__(self, x=0, y=0, format_24=True):
+    def __init__(self, x=0, y=0, format_24=True):  # Виправлено init на __init__
         super().__init__(x, y)
         self.turtle = Turtle()
         self.turtle.hideturtle()
@@ -118,6 +124,15 @@ class DigitalWatch(Watch):
             return
 
         self.turtle.clear()
+
+        hour = Watch.time_dict["hour"]
+        if 8 <= hour < 22:
+            screen.bgcolor("white")
+            text_color = "black"
+        else:
+            screen.bgcolor("darkblue")
+            text_color = "white"
+
         hour = Watch.time_dict["hour"]
         if not self.format_24:
             period = "AM" if hour < 12 else "PM"
@@ -128,9 +143,32 @@ class DigitalWatch(Watch):
         else:
             time_str = f"{hour:02d}:{Watch.time_dict['min']:02d}:{Watch.time_dict['sec']:02d}"
 
-        self.turtle.up()
+        self.turtle.penup()
+        self.turtle.goto(self.x-70, self.y-10)
+        self.turtle.pendown()
+        self.turtle.pencolor("red")
+        self.turtle.fillcolor("pink")
+        self.turtle.begin_fill()
+        for _ in range(2):
+            self.turtle.forward(140)
+            self.turtle.left(90)
+            self.turtle.forward(40)
+            self.turtle.left(90)
+        self.turtle.end_fill()
+        self.turtle.penup()
+
         self.turtle.goto(self.x, self.y)
+        self.turtle.pencolor(text_color)
         self.turtle.write(time_str, font=('Arial', 16, 'normal'), align='center')
+
+class ThemeManager:
+    @staticmethod
+    def set_theme(screen):
+        hour = Watch.time_dict["hour"]
+        if 8 <= hour < 22:
+            screen.bgcolor("white")
+        else:
+            screen.bgcolor("darkblue")
 
 def display_menu():
     print("\nВиберіть годинники для відображення:")
@@ -151,6 +189,7 @@ def get_user_choice():
             print("Будь ласка, введіть коректне число")
 
 def main():
+    global screen
     screen = Screen()
     screen.title("Аналоговий та цифровий годинник")
     screen.setup(800, 400)
@@ -189,6 +228,7 @@ def main():
 
             while True:
                 Watch().update_all()
+                ThemeManager.set_theme(screen)
                 screen.update()
 
                 if not screen._RUNNING:
@@ -207,5 +247,5 @@ def main():
     finally:
         screen.bye()
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # Виправлено name на __name__ і додано підкреслення
     main()
